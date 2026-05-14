@@ -1,0 +1,8 @@
+• VM / EC2 Instance
+• 1. Name
+• 2. Instance Type (t2.micro)
+• 1 vCPU & 1 GB
+• 3. Key Pair
+• 4. IP → Subnet
+• Auto assign Public IP
+• 5. Configure Storage
