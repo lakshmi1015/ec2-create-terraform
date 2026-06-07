@@ -20,6 +20,6 @@ resource "aws_instance" "sandbox_ec2" {
   user_data_replace_on_change = true
 
   tags = {
-    Name = "sandbox-runner-ec2-${count.index + 1}"
+    Name = "sandbox-ec2-${count.index + 1}"
   }
 }
