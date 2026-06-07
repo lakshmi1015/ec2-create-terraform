@@ -16,22 +16,53 @@ variable "instance_type" {
   description = "The size of the EC2 instance"
 }
 
-# Change this value (1, 2, or 3) directly in your code to control deployment size
-variable "instance_count" {
-  type        = number
-  default     = 1 
-  description = "Number of instances to create (1, 2, or 3)"
+# --- Independent Subnet Counts (Max 2 Each) ---
 
+variable "public_instance_count" {
+  type        = number
+  default     = 1
+  description = "Number of instances in the public subnet (0 to 2)"
   validation {
-    condition     = var.instance_count >= 1 && var.instance_count <= 3
-    error_message = "Sandbox limit reached. The instance_count must be exactly 1, 2, or 3."
+    condition     = var.public_instance_count >= 0 && var.public_instance_count <= 2
+    error_message = "Sandbox limit reached: public_instance_count must be between 0 and 2."
   }
 }
 
-# This list accepts your ordered subnets passed from the GitHub Actions workflow
-variable "subnet_ids" {
-  type        = list(string)
-  description = "Ordered list of sandbox subnet IDs passed from the workflow"
+variable "private_instance_count" {
+  type        = number
+  default     = 0
+  description = "Number of instances in the private subnet (0 to 2)"
+  validation {
+    condition     = var.private_instance_count >= 0 && var.private_instance_count <= 2
+    error_message = "Sandbox limit reached: private_instance_count must be between 0 and 2."
+  }
+}
+
+variable "isolated_instance_count" {
+  type        = number
+  default     = 0
+  description = "Number of instances in the isolated subnet (0 to 2)"
+  validation {
+    condition     = var.isolated_instance_count >= 0 && var.isolated_instance_count <= 2
+    error_message = "Sandbox limit reached: isolated_instance_count must be between 0 and 2."
+  }
+}
+
+# --- Networking Secrets ---
+
+variable "subnet_public_id" {
+  type        = string
+  description = "The public subnet ID"
+}
+
+variable "subnet_private_id" {
+  type        = string
+  description = "The private subnet ID"
+}
+
+variable "subnet_isolated_id" {
+  type        = string
+  description = "The isolated subnet ID"
 }
 
 variable "security_group_id" {
