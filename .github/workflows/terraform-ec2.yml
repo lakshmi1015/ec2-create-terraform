@@ -54,9 +54,9 @@ jobs:
 
       - name: Terraform Plan
         env:
-          TF_VAR_public_instance_count: ${{ github.event.inputs.public_count }}
-          TF_VAR_private_instance_count: ${{ github.event.inputs.private_count }}
-          TF_VAR_isolated_instance_count: ${{ github.event.inputs.isolated_count }}
+          TF_VAR_public_instance_count: ${{ fromJSON(github.event.inputs.public_count || '1') }}
+          TF_VAR_private_instance_count: ${{ fromJSON(github.event.inputs.private_count || '0') }}
+          TF_VAR_isolated_instance_count: ${{ fromJSON(github.event.inputs.isolated_count || '0') }}
           TF_VAR_subnet_public_id: ${{ secrets.SUBNET_PUBLIC_ID }}
           TF_VAR_subnet_private_id: ${{ secrets.SUBNET_PRIVATE_ID }}
           TF_VAR_subnet_isolated_id: ${{ secrets.SUBNET_ISOLATED_ID }}
@@ -66,9 +66,9 @@ jobs:
 
       - name: Terraform Apply
         env:
-          TF_VAR_public_instance_count: ${{ github.event.inputs.public_count }}
-          TF_VAR_private_instance_count: ${{ github.event.inputs.private_count }}
-          TF_VAR_isolated_instance_count: ${{ github.event.inputs.isolated_count }}
+          TF_VAR_public_instance_count: ${{ fromJSON(github.event.inputs.public_count || '1') }}
+          TF_VAR_private_instance_count: ${{ fromJSON(github.event.inputs.private_count || '0') }}
+          TF_VAR_isolated_instance_count: ${{ fromJSON(github.event.inputs.isolated_count || '0') }}
           TF_VAR_subnet_public_id: ${{ secrets.SUBNET_PUBLIC_ID }}
           TF_VAR_subnet_private_id: ${{ secrets.SUBNET_PRIVATE_ID }}
           TF_VAR_subnet_isolated_id: ${{ secrets.SUBNET_ISOLATED_ID }}
