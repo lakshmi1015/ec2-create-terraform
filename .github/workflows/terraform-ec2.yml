@@ -1,0 +1,51 @@
+name: "Terraform Deploy EC2"
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    name: "Terraform Apply"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.0"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      # Pass your infrastructure secrets as environment variables
+      - name: Terraform Plan
+        env:
+          TF_VAR_vpc_id: ${{ secrets.VPC_ID }}
+          TF_VAR_subnet_id: ${{ secrets.SUBNET_ID }}
+          TF_VAR_security_group_id: ${{ secrets.SECURITY_GROUP_ID }}
+          TF_VAR_key_name: ${{ secrets.KEY_NAME }}
+        run: terraform plan
+
+      - name: Terraform Apply
+        env:
+          TF_VAR_vpc_id: ${{ secrets.VPC_ID }}
+          TF_VAR_subnet_id: ${{ secrets.SUBNET_ID }}
+          TF_VAR_security_group_id: ${{ secrets.SECURITY_GROUP_ID }}
+          TF_VAR_key_name: ${{ secrets.KEY_NAME }}
+        run: terraform apply -auto-approve
