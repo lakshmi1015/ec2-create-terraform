@@ -12,7 +12,7 @@ variable "ami_id" {
 
 variable "instance_type" {
   type        = string
-  default     = "t2.micro"
+  default     = "t3.micro"
   description = "The size of the EC2 instance"
 }
 
@@ -22,6 +22,7 @@ variable "public_instance_count" {
   type        = number
   default     = 1
   description = "Number of instances in the public subnet (0 to 2)"
+  
   validation {
     condition     = var.public_instance_count >= 0 && var.public_instance_count <= 2
     error_message = "Sandbox limit reached: public_instance_count must be between 0 and 2."
