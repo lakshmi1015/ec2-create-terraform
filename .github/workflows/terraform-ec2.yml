@@ -4,22 +4,27 @@ on:
   # push:
   #   branches:
   #     - main
-
-  # 1. Configures the interactive UI menu for manual execution
   workflow_dispatch:
     inputs:
-      instance_count:
-        description: 'Choose the number of instances to deploy to the sandbox'
+      public_count:
+        description: 'Instances in PUBLIC Subnet'
         required: true
         default: '1'
         type: choice
-        options:
-          - '1'
-          - '2'
-          - '3'
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
-  
+        options: ['0', '1', '2']
+      private_count:
+        description: 'Instances in PRIVATE Subnet'
+        required: true
+        default: '0'
+        type: choice
+        options: ['0', '1', '2']
+      isolated_count:
+        description: 'Instances in ISOLATED Subnet'
+        required: true
+        default: '0'
+        type: choice
+        options: ['0', '1', '2']
+
 jobs:
   terraform:
     name: "Terraform Apply"
@@ -47,19 +52,26 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      # 2. Passes the UI dropdown selection directly down to Terraform's variable
       - name: Terraform Plan
         env:
-          TF_VAR_instance_count: ${{ github.event.inputs.instance_count }}
+          TF_VAR_public_instance_count: ${{ github.event.inputs.public_count }}
+          TF_VAR_private_instance_count: ${{ github.event.inputs.private_count }}
+          TF_VAR_isolated_instance_count: ${{ github.event.inputs.isolated_count }}
+          TF_VAR_subnet_public_id: ${{ secrets.SUBNET_PUBLIC_ID }}
+          TF_VAR_subnet_private_id: ${{ secrets.SUBNET_PRIVATE_ID }}
+          TF_VAR_subnet_isolated_id: ${{ secrets.SUBNET_ISOLATED_ID }}
           TF_VAR_security_group_id: ${{ secrets.SECURITY_GROUP_ID }}
           TF_VAR_key_name: ${{ secrets.KEY_NAME }}
-          TF_VAR_subnet_ids: '["${{ secrets.SUBNET_PUBLIC_ID }}", "${{ secrets.SUBNET_PRIVATE_ID }}", "${{ secrets.SUBNET_ISOLATED_ID }}"]'
         run: terraform plan
 
       - name: Terraform Apply
         env:
-          TF_VAR_instance_count: ${{ github.event.inputs.instance_count }}
+          TF_VAR_public_instance_count: ${{ github.event.inputs.public_count }}
+          TF_VAR_private_instance_count: ${{ github.event.inputs.private_count }}
+          TF_VAR_isolated_instance_count: ${{ github.event.inputs.isolated_count }}
+          TF_VAR_subnet_public_id: ${{ secrets.SUBNET_PUBLIC_ID }}
+          TF_VAR_subnet_private_id: ${{ secrets.SUBNET_PRIVATE_ID }}
+          TF_VAR_subnet_isolated_id: ${{ secrets.SUBNET_ISOLATED_ID }}
           TF_VAR_security_group_id: ${{ secrets.SECURITY_GROUP_ID }}
           TF_VAR_key_name: ${{ secrets.KEY_NAME }}
-          TF_VAR_subnet_ids: '["${{ secrets.SUBNET_PUBLIC_ID }}", "${{ secrets.SUBNET_PRIVATE_ID }}", "${{ secrets.SUBNET_ISOLATED_ID }}"]'
         run: terraform apply -auto-approve
