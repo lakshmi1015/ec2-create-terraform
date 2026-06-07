@@ -17,7 +17,9 @@ on:
           - '1'
           - '2'
           - '3'
-
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  
 jobs:
   terraform:
     name: "Terraform Apply"
